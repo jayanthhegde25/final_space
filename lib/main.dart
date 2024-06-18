@@ -1,35 +1,62 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:find_space/router/app_router.gr.dart';
+import 'package:find_space/services/locator_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 
-import 'homepage.dart';
-
-void main() {
-  runApp(const MyApp());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure the Flutter bindings are initialized
+  await EasyLocalization.ensureInitialized();
+  _initializeServices();
+  runApp(
+    const MyApp(),
+  );
+}
+void _initializeServices() {
+  // locator services
+  setupLocator();
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _appRouter = locator.get<AppRouter>();
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(360, 690),
       minTextAdapt: true,
       splitScreenMode: true,
-      // Use builder only if you need to use library outside ScreenUtilInit context
-      builder: (_ , child) {
-        return MaterialApp(
+      builder: (BuildContext context, Widget? child) {
+        return MaterialApp.router(
+          routerDelegate: AutoRouterDelegate(
+            _appRouter,
+          ),
+          routeInformationParser: _appRouter.defaultRouteParser(),
           debugShowCheckedModeBanner: false,
           title: 'First Method',
           theme: ThemeData(
             primarySwatch: Colors.blue,
             textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
           ),
-          home: child,
+          builder: (context, widget) {
+            ScreenUtil.init(context);
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaleFactor: 1.0,
+              ),
+              child: widget ?? const SizedBox(),
+            );
+          },
         );
       },
-      child: const Homepage(),
     );
   }
 }
