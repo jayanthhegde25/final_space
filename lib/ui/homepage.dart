@@ -9,7 +9,9 @@ import '../commoms/default_row.dart';
 import '../controllers/final_space_controller.dart';
 import '../models/characters_model.dart';
 import '../models/episode_model.dart';
+import '../models/location_model.dart';
 import '../services/locator_service.dart';
+import 'location_page.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -159,12 +161,12 @@ class _HomepageState extends State<Homepage> {
                                             children: [
                                               Center(
                                                 child: Container(
-                                                    padding: EdgeInsets.symmetric(vertical: 6.h,horizontal: 12.w),
+                                                    padding: EdgeInsets.symmetric(vertical: 8.h,horizontal: 12.w),
                                                     decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(14),
-                                                        // border: Border.all(width: 1,color: Colors.black)
+                                                      color: Colors.red,
+                                                       shape: BoxShape.circle,
                                                     ),
-                                                    child: Icon(Icons.arrow_forward,size: 30.sp,color: Colors.black,)
+                                                    child: Icon(Icons.arrow_forward,size: 24.sp,color: Colors.white,)
                                                 ),
                                               ),
                                               SizedBox(height: 40.h,),
@@ -210,6 +212,16 @@ class _HomepageState extends State<Homepage> {
                               },
                             )
                           ),
+                          SizedBox(height: 24.h,),
+                          Text("Location",
+                            style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black
+                            ),
+                          ),
+                          SizedBox(height: 12.h,),
+                          location(),
                           SizedBox(height: 24.h,),
                           Text("Episodes",
                             style: TextStyle(
@@ -262,10 +274,10 @@ class _HomepageState extends State<Homepage> {
                         child: Container(
                             padding: EdgeInsets.symmetric(vertical: 6.h,horizontal: 12.w),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              // border: Border.all(width: 1,color: Colors.black)
+                              shape: BoxShape.circle,
+                              color: Colors.red
                             ),
-                            child: Icon(Icons.arrow_forward,size: 30.sp,color: Colors.black,)
+                            child: Icon(Icons.arrow_forward,size: 30.sp,color: Colors.white,)
                         ),
                       ),
                       SizedBox(height: 40.h,),
@@ -274,57 +286,47 @@ class _HomepageState extends State<Homepage> {
                   ),
                 );
               }
-              return GestureDetector(
-                // onTap: (){
-                //   setState(() {
-                //     epIndex = index;
-                //   });
-                //   // dialog();
-                //
-                // },
-                child: Container(
-                  height: 130,
-                  margin: EdgeInsets.symmetric(vertical: 8.h),
-                  decoration: BoxDecoration(
-                      // color: Colors.blue,
-                      border: Border.all(width: 1,color: Colors.grey),
-                      borderRadius: BorderRadius.circular(20),
+              return Container(
+                height: 130,
+                margin: EdgeInsets.symmetric(vertical: 8.h),
+                decoration: BoxDecoration(
+                    border: Border.all(width: 1,color: Colors.grey),
+                    borderRadius: BorderRadius.circular(20),
 
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 110.w,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
-                          image: DecorationImage(image: NetworkImage(episode.imgUrl),fit:BoxFit.fill),
-                          color: Colors.red,
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 110.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        image: DecorationImage(image: NetworkImage(episode.imgUrl),fit:BoxFit.fill),
+                        color: Colors.red,
+                      ),
+                    ),
+                    SizedBox(width: 4.w,),
+                    Container(
+                      // color: Colors.red,
+                      padding: EdgeInsets.symmetric(vertical: 2.h,horizontal: 4.w),
+                      child: SingleChildScrollView(
+                        scrollDirection:Axis.vertical,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            DefaultRow(name:episode.name,label:'Chapter : ',fontSize:14.sp,fontSize2:  16.sp),
+                            SizedBox(height: 6.h,),
+                            DefaultRow(name:episode.director,label:'Director : ',fontSize:13.sp,fontSize2:14.sp),
+                            SizedBox(height: 6.h,),
+                            DefaultRow(name:episode.writer,label:'Writer : ',fontSize:13.sp,fontSize2:14.sp),
+                            SizedBox(height: 6.h,),
+                            DefaultRow(name:episode.airDate,label:'Release Date : ',fontSize:12.sp,fontSize2:12.sp),
+
+                          ],
                         ),
                       ),
-                      SizedBox(width: 4.w,),
-                      Container(
-                        // color: Colors.red,
-                        padding: EdgeInsets.symmetric(vertical: 2.h,horizontal: 4.w),
-                        child: SingleChildScrollView(
-                          scrollDirection:Axis.vertical,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              DefaultRow(name:episode.name,label:'Chapter : ',fontSize:14.sp,fontSize2:  16.sp),
-                              SizedBox(height: 6.h,),
-                              DefaultRow(name:episode.director,label:'Director : ',fontSize:13.sp,fontSize2:14.sp),
-                              SizedBox(height: 6.h,),
-                              DefaultRow(name:episode.writer,label:'Writer : ',fontSize:13.sp,fontSize2:14.sp),
-                              SizedBox(height: 6.h,),
-                              DefaultRow(name:episode.airDate,label:'Release Date : ',fontSize:12.sp,fontSize2:12.sp),
-
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+                    )
+                  ],
                 ),
               );
             },
@@ -338,6 +340,91 @@ class _HomepageState extends State<Homepage> {
     );
 
   }
+
+  Widget location(){
+    return   SizedBox(
+        height: 200,
+        child:FutureBuilder<List<LocationModel>>(
+          future: _controller.getLocation(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final location = snapshot.data!;
+              return ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: location.length > 4 ? 5 : location.length,
+                itemBuilder: (context, index) {
+                  final locations = location[index];
+                  if (index == 4) {
+                    return GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LocationPage(),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 8.h,horizontal: 12.w),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(Icons.arrow_forward,size: 24.sp,color: Colors.white,)
+                            ),
+                          ),
+                          SizedBox(height: 40.h,),
+
+                        ],
+                      ),
+                    );
+                  }
+                  return Column(
+                    children: [
+                      Container(
+                        height: 150,
+                        width: 150,
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            border: Border.all(width: 1,color: Colors.grey),
+                            borderRadius: BorderRadius.circular(20),
+                            image: DecorationImage(image: NetworkImage(locations.imgUrl),fit: BoxFit.fill)
+                        ),
+                        // child: Image.network(character.img_url??"https://finalspaceapi.com/api/character/avatar/time_swap_sammy.jpg"),
+                      ),
+                      SizedBox(height: 2.h,),
+                      Center(
+                        child: SizedBox(
+                          width: 100,
+                          child: Center(
+                            child: Text(locations.name??"-",
+                              style:  TextStyle(color: Colors.black,fontSize: 14.sp),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return const Center(child: CircularProgressIndicator());
+            }
+          },
+        )
+    );
+
+  }
+
   Future dialog(){
     return  showDialog(
         context: context,
@@ -392,7 +479,7 @@ class _HomepageState extends State<Homepage> {
             ),
             actions: [
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

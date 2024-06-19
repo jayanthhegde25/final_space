@@ -47,6 +47,7 @@ class _CastPageState extends State<CastPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Characters'),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -79,7 +80,7 @@ class _CastPageState extends State<CastPage> {
                           return GestureDetector(
                             onTap: () {
                               setState(() {
-                                _controller.selectedIndex=index;
+                                _controller.selectedIndex = index;
                               });
                               dialog();
                             },
@@ -110,6 +111,7 @@ class _CastPageState extends State<CastPage> {
                                   SingleChildScrollView(
                                     scrollDirection: Axis.vertical,
                                     child: Container(
+                                      width: 180.w,
                                       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 6.w),
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +131,7 @@ class _CastPageState extends State<CastPage> {
                                       ),
                                     ),
                                   ),
-                                  Icon(Icons.arrow_forward_ios_outlined,size: 34.sp,color: Colors.grey,)
+                                  Icon(Icons.arrow_forward_ios_outlined,size: 24.sp,color: Colors.grey,)
                                 ],
                               ),
                             ),
@@ -155,12 +157,14 @@ class _CastPageState extends State<CastPage> {
         context: context,
         builder: (BuildContext context)
         {
+          var name = _searchController.text.isEmpty ?_controller.characters[_controller.selectedIndex]:displayedItems[_controller.selectedIndex];
           return AlertDialog(
             title: Center(
-              child: Text(_controller.characters[_controller.selectedIndex].name!,
+              child: Text(name.name!,
                 style: TextStyle(
                     fontSize: 24.sp,
-                    color: Colors.black
+                    color: Colors.black,
+                  fontWeight: FontWeight.w500
                 ),
               ),
             ),
@@ -176,22 +180,22 @@ class _CastPageState extends State<CastPage> {
                         color: Colors.black,
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(width: 1,color: Colors.grey.shade300),
-                      image: DecorationImage(image: NetworkImage(_controller.characters[_controller.selectedIndex].img_url??""),
+                      image: DecorationImage(image: NetworkImage(name.img_url??""),
                           fit:BoxFit.cover )
                     ) ,
                   ),
                   SizedBox(height: 30.h,),
                   // DefaultRow(name: _controller.characters[_controller.selectedIndex].name ??"NULL", label: 'Name : ', fontSize: 14.sp, fontSize2: 16.sp,),
                   // SizedBox(height: 6.h),
-                  DefaultRow(name: _controller.characters[_controller.selectedIndex].status??"NULL", label: 'Status : ', fontSize: 14.sp, fontSize2: 14.sp,),
+                  DefaultRow(name: name.status??"NULL", label: 'Status : ', fontSize: 14.sp, fontSize2: 14.sp,),
                   SizedBox(height: 6.h),
-                  DefaultRow(name: _controller.characters[_controller.selectedIndex].gender??"NULL", label: 'Gender : ', fontSize: 14.sp, fontSize2: 14.sp,),
+                  DefaultRow(name: name.gender??"NULL", label: 'Gender : ', fontSize: 14.sp, fontSize2: 14.sp,),
                   SizedBox(height: 6.h),
-                  DefaultRow(name: _controller.characters[_controller.selectedIndex].species ?? "NULL", label: 'Species : ', fontSize: 14.sp, fontSize2: 14.sp,),
+                  DefaultRow(name: name.species ?? "NULL", label: 'Species : ', fontSize: 14.sp, fontSize2: 14.sp,),
                   SizedBox(height: 6.h),
-                  DefaultRow(name: _controller.characters[_controller.selectedIndex].hair ?? "Null", label: 'Hair : ', fontSize: 14.sp, fontSize2: 14.sp,),
+                  DefaultRow(name: name.hair ?? "Null", label: 'Hair : ', fontSize: 14.sp, fontSize2: 14.sp,),
                   SizedBox(height: 6.h),
-                  DefaultRow(name: _controller.characters[_controller.selectedIndex].origin ?? "Null", label: 'Origin : ', fontSize: 14.sp, fontSize2: 14.sp,),
+                  DefaultRow(name: name.origin ?? "Null", label: 'Origin : ', fontSize: 14.sp, fontSize2: 14.sp,),
                   SizedBox(height: 12.h),
                   Text("Abilities : ",
                    style: TextStyle(
@@ -199,15 +203,15 @@ class _CastPageState extends State<CastPage> {
                        fontWeight: FontWeight.w500,
                        color: Colors.grey[900]),),
                   SizedBox(height: 2.h),
-                  list(_controller.characters[_controller.selectedIndex].abilities!,),
+                  list(name.abilities!,),
                   SizedBox(height: 12.h),
                   Text("Alias : ",
                     style: TextStyle(
-                        fontSize: 14.sp,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                         color: Colors.grey[900]),),
                   SizedBox(height: 2.h),
-                  list(_controller.characters[_controller.selectedIndex].alias!,),
+                  list(name.alias!,),
 
                 ],
               ),

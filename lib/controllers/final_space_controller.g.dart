@@ -25,6 +25,54 @@ mixin _$FinalSpaceController on FinalSpaceControllerBase, Store {
     });
   }
 
+  late final _$episodesAtom =
+      Atom(name: 'FinalSpaceControllerBase.episodes', context: context);
+
+  @override
+  List<EpisodeModel> get episodes {
+    _$episodesAtom.reportRead();
+    return super.episodes;
+  }
+
+  @override
+  set episodes(List<EpisodeModel> value) {
+    _$episodesAtom.reportWrite(value, super.episodes, () {
+      super.episodes = value;
+    });
+  }
+
+  late final _$charactersAtom =
+      Atom(name: 'FinalSpaceControllerBase.characters', context: context);
+
+  @override
+  List<CharactersModel> get characters {
+    _$charactersAtom.reportRead();
+    return super.characters;
+  }
+
+  @override
+  set characters(List<CharactersModel> value) {
+    _$charactersAtom.reportWrite(value, super.characters, () {
+      super.characters = value;
+    });
+  }
+
+  late final _$locationsAtom =
+      Atom(name: 'FinalSpaceControllerBase.locations', context: context);
+
+  @override
+  List<LocationModel> get locations {
+    _$locationsAtom.reportRead();
+    return super.locations;
+  }
+
+  @override
+  set locations(List<LocationModel> value) {
+    _$locationsAtom.reportWrite(value, super.locations, () {
+      super.locations = value;
+    });
+  }
+
   late final _$selectedIndexAtom =
       Atom(name: 'FinalSpaceControllerBase.selectedIndex', context: context);
 
@@ -57,10 +105,21 @@ mixin _$FinalSpaceController on FinalSpaceControllerBase, Store {
     return _$getEpisodeAsyncAction.run(() => super.getEpisode());
   }
 
+  late final _$getLocationAsyncAction =
+      AsyncAction('FinalSpaceControllerBase.getLocation', context: context);
+
+  @override
+  Future<List<LocationModel>> getLocation() {
+    return _$getLocationAsyncAction.run(() => super.getLocation());
+  }
+
   @override
   String toString() {
     return '''
 userData: ${userData},
+episodes: ${episodes},
+characters: ${characters},
+locations: ${locations},
 selectedIndex: ${selectedIndex}
     ''';
   }

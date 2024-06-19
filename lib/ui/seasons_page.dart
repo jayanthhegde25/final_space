@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../commoms/default_row.dart';
 import '../controllers/final_space_controller.dart';
 import '../models/episode_model.dart';
+import '../models/indiviual_char_model.dart';
 import '../services/locator_service.dart';
 
 class SeasonsPage extends StatefulWidget {
@@ -38,113 +39,138 @@ class _SeasonsPageState extends State<SeasonsPage> {
     setState(() {
       displayedItems = _controller.episodes
           .where((item) =>
-          item.name.toLowerCase().contains(_searchController.text.toLowerCase()))
+          item.name.toLowerCase().contains(
+              _searchController.text.toLowerCase()))
           .toList();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Episodes'),
-        centerTitle: true,
-      ),
-      body:SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Observer(
-            builder: (context) {
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      style: TextStyle(color: Colors.black),
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32)),
-                        prefixIcon: Icon(Icons.search),
+        appBar: AppBar(
+          title: Text('Episodes'),
+          centerTitle: true,
+        ),
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Observer(
+              builder: (context) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        style: TextStyle(color: Colors.black),
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32)),
+                          prefixIcon: Icon(Icons.search),
+                        ),
                       ),
                     ),
-                  ),
-                  FutureBuilder<List<EpisodeModel>>(
-                    future: _controller.getEpisode(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        _controller.episodes = snapshot.data!;
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: _searchController.text.isEmpty ? _controller.episodes.length :displayedItems.length,
-                          itemBuilder: (context, index) {
-                            final episodes = _searchController.text.isEmpty ?_controller.episodes[index]: displayedItems[index];
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _controller.selectedIndex=index;
-                                });
-                                // dialog();
-                              },
-                              child: Container(
-                                height: 150,
-                                margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 1, color: Colors.grey.shade300),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Container(
-                                      width: 130.w,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(18),
-                                        image: DecorationImage(
-                                          image: NetworkImage(episodes.imgUrl ??
-                                              "https://finalspaceapi.com/api/character/avatar/time_swap_sammy.jpg"),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                    SizedBox(width: 6.w),
-                                    SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 6.w),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            DefaultRow(name:episodes.name,label:'Chapter : ',fontSize:14.sp,fontSize2:  16.sp),
-                                          SizedBox(height: 6.h,),
-                                          DefaultRow(name:episodes.director,label:'Director : ',fontSize:13.sp,fontSize2:14.sp),
-                                          SizedBox(height: 6.h,),
-                                          DefaultRow(name:episodes.writer,label:'Writer : ',fontSize:13.sp,fontSize2:14.sp),
-                                          SizedBox(height: 6.h,),
-                                          DefaultRow(name:episodes.airDate,label:'Release Date : ',fontSize:12.sp,fontSize2:12.sp)
-                                          ]
+                    FutureBuilder<List<EpisodeModel>>(
+                      future: _controller.getEpisode(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          _controller.episodes = snapshot.data!;
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: _searchController.text.isEmpty
+                                ? _controller.episodes.length
+                                : displayedItems.length,
+                            itemBuilder: (context, index) {
+                              final episodes = _searchController.text.isEmpty
+                                  ? _controller.episodes[index]
+                                  : displayedItems[index];
+                              return GestureDetector(
+                                onTap: () {
+                                },
+                                child: Container(
+                                  height: 150,
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 8.w, vertical: 8.h),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 1, color: Colors.grey.shade300),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Container(
+                                        width: 130.w,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              18),
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                episodes.imgUrl ??
+                                                    "https://finalspaceapi.com/api/character/avatar/time_swap_sammy.jpg"),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          color: Colors.red,
                                         ),
                                       ),
-                                    ),
-                                    // Icon(Icons.arrow_forward_ios_outlined,size: 34.sp,color: Colors.grey,)
-                                  ],
+                                      SizedBox(width: 4.w),
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.vertical,
+                                        child: Container(
+                                          // color: Colors.yellow,
+                                          width: 195.w,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8.h, horizontal: 6.w),
+                                          child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                DefaultRow(name: episodes.name,
+                                                    label: 'Chapter : ',
+                                                    fontSize: 14.sp,
+                                                    fontSize2: 16.sp),
+                                                SizedBox(height: 6.h,),
+                                                DefaultRow(
+                                                    name: episodes.director,
+                                                    label: 'Director : ',
+                                                    fontSize: 13.sp,
+                                                    fontSize2: 14.sp),
+                                                SizedBox(height: 6.h,),
+                                                DefaultRow(
+                                                    name: episodes.writer,
+                                                    label: 'Writer : ',
+                                                    fontSize: 13.sp,
+                                                    fontSize2: 14.sp),
+                                                SizedBox(height: 6.h,),
+                                                DefaultRow(
+                                                    name: episodes.airDate,
+                                                    label: 'Release Date : ',
+                                                    fontSize: 12.sp,
+                                                    fontSize2: 12.sp)
+                                              ]
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                    },
-                  )
-                ],
-              );
-            }
-        ),
-      )
+                              );
+                            },
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    )
+                  ],
+                );
+              }
+          ),
+        )
     );
   }
 }
