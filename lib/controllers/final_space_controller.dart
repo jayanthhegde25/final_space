@@ -15,6 +15,12 @@ abstract class FinalSpaceControllerBase with Store {
   List<dynamic> userData =[];
 
   @observable
+  List<EpisodeModel> episodes =[];
+
+  @observable
+  List<CharactersModel> characters = [];
+
+  @observable
   int selectedIndex= 0;
 
   @action
