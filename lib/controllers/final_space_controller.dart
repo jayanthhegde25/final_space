@@ -1,6 +1,7 @@
 
 import 'dart:developer';
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:find_space/models/characters_model.dart';
 import 'package:mobx/mobx.dart';
 import 'package:http/http.dart' as http;
@@ -12,6 +13,7 @@ part 'final_space_controller.g.dart';
 class FinalSpaceController = FinalSpaceControllerBase with _$FinalSpaceController;
 abstract class FinalSpaceControllerBase with Store {
 
+ final Dio dio = Dio();
   @observable
   List<dynamic> userData =[];
 
@@ -31,39 +33,37 @@ abstract class FinalSpaceControllerBase with Store {
   Future<List<CharactersModel>> getCharacters() async {
     try {
       log('Fetching characters...');
-      final response = await http.get(Uri.parse('https://finalspaceapi.com/api/v0/character'));
+      final response = await dio.get('https://finalspaceapi.com/api/v0/character');
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body) as List<dynamic>;
-        final characters = jsonData.map((json) => CharactersModel.fromJson(json)).toList();
+        final List<dynamic> data = response.data;
+        final List<CharactersModel> characters =
+        data.map((json) => CharactersModel.fromJson(json)).toList();
         return characters;
       } else {
-        log('Failed to load character data. Status code: ${response.statusCode}');
-        throw Exception('Failed to load character data');
+        throw Exception('Failed to load characters');
       }
-    } catch (error) {
-      log(error.toString(), name: 'getCharacters');
-      rethrow;
+    } catch (e) {
+      throw Exception('Failed to load characters: $e');
     }
-  }
+    }
 
   @action
   Future<List<EpisodeModel>> getEpisode() async {
     try {
       log('Fetching characters...');
-      final response = await http.get(Uri.parse('https://finalspaceapi.com/api/v0/episode'));
+      final response = await dio.get('https://finalspaceapi.com/api/v0/episode');
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body) as List<dynamic>;
-        final episode = jsonData.map((json) => EpisodeModel.fromJson(json)).toList();
-        return episode;
+        final List<dynamic> data = response.data;
+        final List<EpisodeModel> episodes =
+        data.map((json) => EpisodeModel.fromJson(json)).toList();
+        return episodes;
       } else {
-        log('Failed to load character data. Status code: ${response.statusCode}');
-        throw Exception('Failed to load character data');
+        throw Exception('Failed to load characters');
       }
-    } catch (error) {
-      log(error.toString(), name: 'getEpisode');
-      rethrow;
+    } catch (e) {
+      throw Exception('Failed to load characters: $e');
     }
   }
 
@@ -71,19 +71,18 @@ abstract class FinalSpaceControllerBase with Store {
   Future<List<LocationModel>> getLocation() async {
     try {
       log('Fetching characters...');
-      final response = await http.get(Uri.parse('https://finalspaceapi.com/api/v0/location'));
+      final response = await dio.get('https://finalspaceapi.com/api/v0/location');
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body) as List<dynamic>;
-        final location = jsonData.map((json) => LocationModel.fromJson(json)).toList();
-        return location;
+        final List<dynamic> data = response.data;
+        final List<LocationModel> locations =
+        data.map((json) => LocationModel.fromJson(json)).toList();
+        return locations;
       } else {
-        log('Failed to load character data. Status code: ${response.statusCode}');
-        throw Exception('Failed to load character data');
+        throw Exception('Failed to load characters');
       }
-    } catch (error) {
-      log(error.toString(), name: 'getEpisode');
-      rethrow;
+    } catch (e) {
+      throw Exception('Failed to load characters: $e');
     }
   }
 
